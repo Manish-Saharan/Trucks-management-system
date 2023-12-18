@@ -1,0 +1,66 @@
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f5f5f5;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  width: 300px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 5px 10px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+
+#addForm label,
+#searchForm label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#addForm input[type="text"],
+#searchForm input[type="text"] {
+  display: block;
+  margin-bottom: 10px;
+}
+
+#getAllButton {
+  margin-bottom: 20px;
+}
+
+#searchForm button,
+#deleteButton {
+  margin-left: 10px;
+}
+
+#resultsTable {
+  margin-top: 20px;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}

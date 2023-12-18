@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Trucks Database</title>
+  <link rel="stylesheet" href="style.css">
+
+  
+</head>
+<body>
+  <h1>Trucks Database</h1>
+
+    <!--Textboxes and buttons for adding new Server-->
+    <form id="addForm">
+      <label for="nameInput">Driver Name:</label>
+      <input type="text" id="nameInput" placeholder="Enter Driver name" required>
+      <label for="idInput">Truck ID:</label>
+      <input type="text" id="idInput" placeholder="Enter Truck ID" required>
+      <label for="languageInput">FasTag ID:</label>
+      <input type="text" id="languageInput" placeholder="Enter FasTag ID:" required>
+      <label for="frameworkInput">Notes:</label>
+      <input type="text" id="frameworkInput" placeholder="Enter any Notes" required>
+      <button type="submit">Add Truck</button>
+    </form>
+
+    <!--Textboxes and buttons for searching a Server-->
+    <form id="searchForm">
+      <input type="text" id="searchByIdInput" placeholder="Enter ID for search">
+      <button type="submit" id="searchByIdButton">SearchByID</button>
+      <input type="text" id="searchByNameInput" placeholder="Enter Driver Name for search">
+      <button type="submit" id="searchByNameButton">SearchByDriverName</button>
+    </form>
+
+    <!--Textbox and button for deleting a Server-->
+    <form id="deleteForm">
+      <input type="text" id="deleteInput" placeholder="Enter ID for delete" required>
+      <button type="submit" id="deleteButton">Delete</button>
+    </form>
+
+  <button id="getAllButton">Get All Trucks</button>
+  <!--Table for displaying Server list-->
+
+  <table id="resultsTable">
+    <thead>
+      <tr>
+        <th>Truck ID</th>
+        <th>Driver Name</th>
+        <th>FasTag ID</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <script>
+    // Function to fetch and display all Servers
+    function getAllServers() {
+      fetch('http://localhost:8080/servers')
+        .then(response => response.json())
+        .then(data => {
+          const resultsTable = document.getElementById('resultsTable');
+          const tbody = resultsTable.getElementsByTagName('tbody')[0];
+          tbody.innerHTML = '';
+
+          data.forEach(server => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${server.id}</td>
+              <td>${server.name}</td>
+              <td>${server.language}</td>
+              <td>${server.framework}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Function to add a new server
+    function addServer(name, id, language, framework) {
+      const server = {
+        name: name,
+        id: id,
+        language: language,
+        framework: framework
+      };
+
+      fetch('http://localhost:8080/servers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(server)
+      })
+        .then(response => {
+          if (response.ok) {
+            // Refresh the table
+            getAllServers();
+          } else {
+            console.error('Error:', response.statusText);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Function to search servers by ID
+    function searchServerI(id) {
+      fetch(`http://localhost:8080/server/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          const resultsTable = document.getElementById('resultsTable');
+          const tbody = resultsTable.getElementsByTagName('tbody')[0];
+          tbody.innerHTML = '';
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${data.id}</td>
+            <td>${data.name}</td>
+            <td>${data.language}</td>
+            <td>${data.framework}</td>
+          `;
+          tbody.appendChild(row);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Function to search servers by name
+    function searchServerN(text) {
+      fetch(`http://localhost:8080/servers/${text}`)
+        .then(response => response.json())
+        .then(data => {
+          const resultsTable = document.getElementById('resultsTable');
+          const tbody = resultsTable.getElementsByTagName('tbody')[0];
+          tbody.innerHTML = '';
+          
+          for (let dataitem of data){
+            let row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${dataitem.id}</td>
+            <td>${dataitem.name}</td>
+            <td>${dataitem.language}</td>
+            <td>${dataitem.framework}</td>
+          `;
+          tbody.appendChild(row);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Function to delete a server by ID
+    function deleteServer(id) {
+      fetch(`http://localhost:8080/deleteserver/${id}`, {
+        method: 'DELETE'
+      })
+        .then(response => {
+          if (response.ok) {
+            // Refresh the table
+            getAllServers();
+          } else {
+            console.error('Error:', response.statusText);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Submit event listener for the add form
+    const addForm = document.getElementById('addForm');
+    addForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const nameInput = document.getElementById('nameInput');
+      const idInput = document.getElementById('idInput');
+      const languageInput = document.getElementById('languageInput');
+      const frameworkInput = document.getElementById('frameworkInput');
+      addServer(nameInput.value, idInput.value, languageInput.value, frameworkInput.value);
+      // Clear input fields
+      nameInput.value = '';
+      idInput.value = '';
+      languageInput.value = '';
+      frameworkInput.value = '';
+    });
+
+    // Submit event listener for the search form
+    const searchForm = document.getElementById('searchForm');
+    searchForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const searchByIdInput = document.getElementById('searchByIdInput');
+      const searchByNameInput = document.getElementById('searchByNameInput');
+      const searchByIdButton = document.getElementById('searchByIdButton');
+      const searchByNameButton = document.getElementById('searchByNameButton');
+      
+      if (event.submitter == searchByIdButton) {
+        searchServerI(searchByIdInput.value);
+      } 
+      else if (event.submitter == searchByNameButton) {
+        searchServerN(searchByNameInput.value);
+      }
+    });
+
+
+    // Click event listener for the delete button
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.addEventListener('click', function(event) {
+      event.preventDefault();
+      const deleteInput = document.getElementById('deleteInput');
+      deleteServer(deleteInput.value);
+    });
+
+    // Click event listener for the get all button
+    const getAllButton = document.getElementById('getAllButton');
+    getAllButton.addEventListener('click', function(event) {
+      event.preventDefault();
+      getAllServers();
+    });
+  </script>
+</body>
+</html>

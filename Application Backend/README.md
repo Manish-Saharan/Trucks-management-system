@@ -1,22 +1,22 @@
-Creating a REST API using JAVA
+Creating a REST API application using JAVA
 
 I have created a REST API using Springboot that connects with MongoDB database. 
-The endpoints are tested using Postman. Endpoint Responses can be found in the 'Screenshots' folder.
+The endpoints are tested using Postman.
 
 API Endpoints:
 
 - GET: "/servers"
-  Gets the list of all the Servers present in the Database
+  Gets the list of all the Trucks present in the Database
 
 - POST: "/servers"
-  Adds a new Server to the Database
+  Adds a new Truck to the Database
 
 - GET: "/server/{ID}"
-  Finds a Server of given ID
+  Finds a Truck of given ID
 
 - GET: "/server/{text}" 
-  Finds the list of Servers having the specified keyword in their names
+  Finds the list of Trucks having the specified keyword in their Driver names
 
 -Delete: "/deleteserver/{ID}"
-  Deletes a Server of given ID
+  Deletes a Truck of given ID
  
